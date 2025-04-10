@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Sign-In with Firebase</title>
+</head>
+<body>
+  <h1>Google Sign-In Demo</h1>
+
+  <button id="login">Sign in with Google</button>
+  <button id="logout" style="display: none;">Sign Out</button>
+
+  <div id="userDetails" style="margin-top: 20px;"></div>
+
+  <!-- Firebase SDKs and Your App Code -->
+  <script type="module">
+    // Import Firebase libraries
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // Replace with your Firebase config
+    const firebaseConfig = {
+        apiKey: "AIzaSyD2f4QkEQCLK2vNWMZhmLYeGY3e24_lcFg",
+  authDomain: "fir-authentication-6bb53.firebaseapp.com",
+  projectId: "fir-authentication-6bb53",
+  storageBucket: "fir-authentication-6bb53.firebasestorage.app",
+  messagingSenderId: "256114873045",
+  appId: "1:256114873045:web:7a0b34e680acbce764885c",
+  measurementId: "G-HEKJGL54J4"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // DOM elements
+    const loginBtn = document.getElementById('login');
+    const logoutBtn = document.getElementById('logout');
+    const userDetails = document.getElementById('userDetails');
+
+    // Sign in with Google
+    loginBtn.addEventListener('click', () => {
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const user = result.user;
+          showUser(user);
+        })
+        .catch((error) => {
+          console.error(error.message);
+        });
+    });
+
+    // Sign out
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth).then(() => {
+        userDetails.innerHTML = '';
+        loginBtn.style.display = 'inline-block';
+        logoutBtn.style.display = 'none';
+      });
+    });
+
+    // Display user details
+    function showUser(user) {
+      userDetails.innerHTML = `
+        <p><strong>Name:</strong> ${user.displayName}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <img src="${user.photoURL}" alt="Profile Picture" width="100" />
+      `;
+      loginBtn.style.display = 'none';
+      logoutBtn.style.display = 'inline-block';
+    }
+
+    // Check if user is already signed in
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        showUser(user);
+      }
+    });
+  </script>
+</body>
+</html>

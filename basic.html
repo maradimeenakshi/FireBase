@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Firestore CRUD Demo</title>
+</head>
+<body>
+  <h1>Firestore CRUD with Buttons</h1>
+
+  <button id="addBtn">Add User</button>
+  <button id="getBtn">Get Users</button>
+
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+    // 🔐 Replace with your Firebase project config
+    const firebaseConfig = {
+        apiKey: "AIzaSyDjFtUE-IDS6oukRKLHnoyYOxYX0u9z4vI",
+  authDomain: "basic-crud-operations-f4584.firebaseapp.com",
+  projectId: "basic-crud-operations-f4584",
+  storageBucket: "basic-crud-operations-f4584.firebasestorage.app",
+  messagingSenderId: "237823377452",
+  appId: "1:237823377452:web:bea86647668b205f045189",
+  measurementId: "G-75S8YWH5R7"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // 🔧 Add user to Firestore
+    async function addUser() {
+      try {
+        const docRef = await addDoc(collection(db, "users"), {
+          name: "Alice",
+          age: 22
+        });
+        console.log("User added with ID:", docRef.id);
+      } catch (e) {
+        console.error("Error adding user:", e);
+      }
+    }
+
+    // 📄 Get users from Firestore
+    async function getUsers() {
+      const querySnapshot = await getDocs(collection(db, "users"));
+      querySnapshot.forEach((doc) => {
+        console.log(doc.id, " => ", doc.data());
+      });
+    }
+
+    // 🎯 Connect buttons to functions
+    document.getElementById("addBtn").addEventListener("click", addUser);
+    document.getElementById("getBtn").addEventListener("click", getUsers);
+  </script>
+</body>
+</html>
